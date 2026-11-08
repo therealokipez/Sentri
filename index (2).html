@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sentri</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#F2F4F8;--surf:#fff;--ink:#101828;--mute:#5B6577;--line:#E1E5EC;--safe:#17845A;--sus:#B86E00;--high:#D1243B;--safe-t:#E4F5EC;--sus-t:#FDF0DA;--high-t:#FCE6E9;--btn:#101828;--btn-t:#fff;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1320;--surf:#161D2E;--ink:#E8ECF4;--mute:#97A1B5;--line:#263048;--safe:#4CC38A;--sus:#F0A93B;--high:#FF6B7F;--safe-t:#173528;--sus-t:#3A2D12;--high-t:#3E1A22;--btn:#E8ECF4;--btn-t:#0E1320;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1320;--surf:#161D2E;--ink:#E8ECF4;--mute:#97A1B5;--line:#263048;--safe:#4CC38A;--sus:#F0A93B;--high:#FF6B7F;--safe-t:#173528;--sus-t:#3A2D12;--high-t:#3E1A22;--btn:#E8ECF4;--btn-t:#0E1320;color-scheme:dark}
+*{box-sizing:border-box;margin:0}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.45 Figtree,system-ui,sans-serif;max-width:520px;margin:0 auto;padding-bottom:84px;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+h1,h2,.num{font-family:"Bricolage Grotesque",Figtree,sans-serif;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--bg);padding:14px 18px 10px;display:flex;align-items:center;justify-content:space-between}
+.logo{font:700 22px "Bricolage Grotesque",sans-serif;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+.logo i{width:10px;height:10px;border-radius:50%;background:var(--safe);box-shadow:0 0 0 4px var(--safe-t)}
+.logo.alert i{background:var(--high);box-shadow:0 0 0 4px var(--high-t)}
+.sim{font-size:12px;color:var(--mute);border:1px solid var(--line);border-radius:99px;padding:3px 10px}
+main{padding:4px 18px}
+.tab{display:none}.tab.on{display:block}
+h2{font-size:26px;letter-spacing:-.02em;line-height:1.15;margin:6px 0 4px}
+.sub{color:var(--mute);margin-bottom:16px}
+.atk{width:100%;background:var(--btn);color:var(--btn-t);border-radius:14px;padding:15px;font-weight:600;font-size:16px;margin-bottom:12px;transition:transform .12s}
+.atk:active{transform:scale(.98)}.atk[disabled]{opacity:.55}
+.banner{background:var(--high-t);border:1px solid var(--high);border-radius:14px;padding:14px;margin-bottom:12px;animation:pop .35s ease}
+.banner b{display:block;font:700 17px "Bricolage Grotesque",sans-serif;color:var(--high)}
+.banner p{margin:4px 0 10px}
+.banner button{background:var(--high);color:#fff;border-radius:10px;padding:9px 14px;font-weight:600}
+@keyframes pop{from{transform:translateY(-6px) scale(.98);opacity:0}}
+.chips{display:flex;gap:8px;margin:14px 0 10px;align-items:center}
+.chip{border:1px solid var(--line);border-radius:99px;padding:6px 14px;font-weight:500;color:var(--mute)}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cnt{margin-left:auto;color:var(--mute);font-size:13px}
+.row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px}
+.row.fresh{animation:pop .3s ease}
+.row .dot{width:10px;height:10px;border-radius:50%;flex:none}
+.row .mid{flex:1;min-width:0}
+.amt{font:700 18px "Bricolage Grotesque",sans-serif;font-variant-numeric:tabular-nums}
+.meta{color:var(--mute);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{font-size:12.5px;font-weight:600;border-radius:99px;padding:4px 10px;white-space:nowrap}
+.safe{--c:var(--safe);--t:var(--safe-t)}.sus{--c:var(--sus);--t:var(--sus-t)}.high{--c:var(--high);--t:var(--high-t)}
+.dot{background:var(--c)}.pill{background:var(--t);color:var(--c)}
+.st{font-size:12px;color:var(--mute);display:block;text-align:right;margin-top:2px}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.card h3{font:600 14px Figtree;color:var(--mute);margin-bottom:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.stat{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:12px}
+.stat .num{font-size:26px;font-weight:700;display:block;line-height:1.1}.stat span:last-child{font-size:12.5px;color:var(--mute)}
+.bar{display:flex;height:12px;border-radius:99px;overflow:hidden;background:var(--line);gap:2px}
+.bar i{display:block;transition:flex .4s}
+.leg{display:flex;gap:14px;margin-top:10px;font-size:13px;color:var(--mute);flex-wrap:wrap}
+.leg b{color:var(--ink)}
+.tops div{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid var(--line)}
+.tops div:first-child{border:0}
+.empty{text-align:center;color:var(--mute);padding:36px 12px}
+.disc{font-size:12.5px;color:var(--mute);text-align:center;margin:18px 6px}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surf);border-top:1px solid var(--line);display:flex;max-width:520px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{flex:1;padding:12px 0 10px;font-size:12.5px;font-weight:500;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:3px;position:relative}
+nav button[aria-current=page]{color:var(--ink)}
+nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav .badge{position:absolute;top:6px;left:calc(50% + 6px);background:var(--high);color:#fff;font-size:11px;font-weight:600;border-radius:99px;padding:0 6px;min-width:18px;text-align:center}
+.scrim{position:fixed;inset:0;background:rgba(8,12,22,.5);z-index:30;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;z-index:31;background:var(--bg);border-radius:22px 22px 0 0;padding:10px 18px calc(18px + env(safe-area-inset-bottom,0px));max-height:88vh;overflow:auto;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.sheet.on{transform:none}
+.grab{width:40px;height:4px;border-radius:9px;background:var(--line);margin:0 auto 14px}
+.hero{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+.ring{position:relative;width:104px;height:104px;flex:none}
+.ring svg{transform:rotate(-90deg)}.ring circle{fill:none;stroke-width:10;stroke-linecap:round}
+.ring .tr{stroke:var(--line)}.ring .fg{stroke:var(--c);transition:stroke-dashoffset .8s cubic-bezier(.2,.8,.2,1)}
+.ring .num{position:absolute;inset:0;display:grid;place-items:center;font-size:34px;font-weight:700;color:var(--c)}
+.sig{margin:10px 0}.sig .l{display:flex;justify-content:space-between;font-size:13.5px}
+.sig .t{height:6px;background:var(--line);border-radius:9px;margin-top:5px;overflow:hidden}.sig .t i{display:block;height:100%;background:var(--c);border-radius:9px;transition:width .7s}
+.why{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:14px;margin:14px 0}
+.why small{display:block;color:var(--mute);margin-top:8px;font-size:12px}
+.acts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.acts button{border:1.5px solid var(--line);background:var(--surf);border-radius:12px;padding:13px 0;font-weight:600}
+.acts .rec{background:var(--btn);color:var(--btn-t);border-color:var(--btn)}
+.acts button[aria-pressed=true]{outline:2px solid var(--c)}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:500;opacity:0;transition:.25s;z-index:40;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.wl{color:var(--mute);font-size:13px;text-decoration:underline;padding:2px 0;text-align:left;display:block}.acts button:disabled{opacity:.5}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header><div class="logo" id="logo"><i></i>Sentri</div><span><span class="sim">Simulated data</span> <button class="sim" id="rst">Reset</button></span></header>
+<main>
+ <section class="tab on" id="t-live">
+  <h2>Live payments</h2><p class="sub">Typical for this account: 5 to 10 payments a day, $50 to $200 each.</p>
+  <button class="atk" id="atk">Simulate attack</button>
+  <div class="chips" role="group" aria-label="Attack type" style="margin-top:0"><button class="chip" data-k="burst" aria-pressed="true">Burst</button><button class="chip" data-k="struct" aria-pressed="false">Structuring</button><button class="chip" data-k="sweep" aria-pressed="false">New-wallet sweep</button></div>
+  <div id="banner"></div>
+  <div class="chips"><button class="chip" data-f="all" aria-pressed="true">All</button><button class="chip" data-f="flag" aria-pressed="false">Needs review</button><span class="cnt" id="cnt"></span></div>
+  <div id="feed"></div>
+ </section>
+ <section class="tab" id="t-review"><h2>Review queue</h2><p class="sub">Flagged payments waiting for a decision.</p><div id="queue"></div></section>
+ <section class="tab" id="t-wal"><h2>Wallets</h2><p class="sub">Every counterparty, riskiest first.</p><div id="wal"></div></section>
+ <section class="tab" id="t-over"><h2>Overview</h2><p class="sub">What is happening across this account.</p><div id="over"></div></section>
+ <p class="disc">This prototype demonstrates detection on simulated transactions. It is not production fraud prevention.</p>
+</main>
+<nav id="nav">
+ <button data-t="live" aria-current="page"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Live</button>
+ <button data-t="review"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg>Review<span class="badge" id="bdg" hidden></span></button>
+ <button data-t="wal"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18M16 14.5h2"/></svg>Wallets</button>
+ <button data-t="over"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Overview</button>
+</nav>
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Payment details"></div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const $=s=>document.querySelector(s),cl=(v,a,b)=>Math.min(b,Math.max(a,v)),R=(a,b)=>Math.round(a+Math.random()*(b-a));
+const hx=()=>Math.random().toString(16).slice(2,6);
+const known=Array.from({length:8},()=>"0x"+hx()+"…"+hx());
+const kage=known.map(()=>R(180,900));
+let kind="burst",lastTest=null;
+const KINDS={burst:{n:35,amt:[450,499],pool:0,bad:.2,hour:2,label:"35 payments from unfamiliar wallets arrived in seconds."},struct:{n:14,amt:[470,499],pool:1,bad:0,hour:14,label:"14 payments just under the $500 review threshold came from three new wallets."},sweep:{n:12,amt:[1500,3500],pool:0,bad:.7,hour:3,label:"12 large payments arrived from brand-new wallets overnight."}};
+const W={vel:.25,nw:.2,amt:.15,str:.15,wal:.15,tim:.1};
+const NAME={vel:"Payment speed",nw:"New counterparties",amt:"Amount vs usual",str:"Structuring",wal:"Wallet risk",tim:"Time of day"};
+let txs=[],id=0,filter="all",tab="live",open=null,ow=null,atkRunning=false,banner=null;const watch=new Set(),blockedW=new Set();
+const band=s=>s>=70?["high","High risk"]:s>=40?["sus","Review"]:["safe","Safe"];
+const action=s=>s>=70?"hold for manual review and check wallet relationships before settlement":s>=40?"flag for analyst review before releasing":"allow";
+function score(tx){
+ const win=txs.filter(x=>tx.t-x.t<120000).concat(tx),n=win.length,v=win.filter(x=>tx.t-x.t<15000).length;
+ const newR=win.filter(x=>x.isNew).length/n,near=win.filter(x=>x.amount>=450&&x.amount<500).length;
+ const sig={vel:cl((v-5)*5,0,100),nw:newR*100*Math.min(1,n/6),amt:cl((tx.amount-200)/3,0,100),
+  str:tx.amount>=450&&tx.amount<500?cl(near*18,0,100):0,wal:tx.bad||watch.has(tx.wallet)?100:tx.isNew?25:0,tim:tx.hour<6||tx.hour>22?70:0};
+ const rule=Object.keys(W).reduce((a,k)=>a+W[k]*sig[k],0);
+ const top3=Object.values(sig).sort((a,b)=>b-a).slice(0,3),anom=top3.reduce((a,b)=>a+b,0)/3;
+ tx.sig=sig;tx.score=Math.round(.7*rule+.3*anom);
+ tx.top=Object.keys(W).filter(k=>sig[k]>=25).sort((a,b)=>W[b]*sig[b]-W[a]*sig[a]).slice(0,3);
+ tx.ctx={n:v,newR:Math.round(newR*100),near};
+}
+const reason={
+ vel:t=>`${t.ctx.n} payments arrived within 15 seconds, against a normal 5 to 10 per day`,
+ nw:t=>`${t.ctx.newR}% of recent counterparties are wallets this account has never seen`,
+ amt:t=>`$${t.amount} is well above the usual $50 to $200`,
+ str:t=>`${t.ctx.near} payments sit just under the $500 review threshold`,
+ wal:t=>t.bad||watch.has(t.wallet)?"the counterparty is on a known-bad or watched wallet list":"the counterparty wallet is very new",
+ tim:t=>`activity at ${String(t.hour).padStart(2,"0")}:00 is outside normal hours`};
+function explain(t){const b=band(t.score)[1];
+ return `${b} (${t.score}/100). `+t.top.map(k=>cap(reason[k](t))).join(". ")+`. Recommendation: ${action(t.score)}.`}
+const cap=s=>s[0].toUpperCase()+s.slice(1);
+function add(tx){score(tx);txs.unshift({...tx});if(txs.length>300)txs.pop();return txs[0]}
+function normal(){const isNew=Math.random()<.12,k=R(0,7);
+ return add({id:++id,t:Date.now(),amount:R(50,200),wallet:isNew?"0x"+hx()+"…"+hx():known[k],isNew,age:isNew?R(0,3):kage[k],bad:false,hour:R(9,18),status:"pending",fresh:true})}
+function attack(){
+ if(atkRunning)return;atkRunning=true;banner=null;const b=$("#atk");b.disabled=true;let i=0,peak=0,first=null;const P=KINDS[kind],pool=[1,2,3].map(()=>"0x"+hx()+"…"+hx());
+ const iv=setInterval(()=>{const t=add({id:++id,t:Date.now(),amount:R(...P.amt),wallet:P.pool?pool[R(0,2)]:"0x"+hx()+"…"+hx(),isNew:true,age:R(0,2),bad:Math.random()<P.bad,hour:P.hour,status:"pending",fresh:true});
+  peak=Math.max(peak,t.score);if(!first&&t.score>=70)first=t.id;i++;b.textContent=`Attack running… ${i} of ${P.n}`;render();
+  if(i>=P.n){clearInterval(iv);atkRunning=false;b.disabled=false;b.textContent="Simulate attack";
+   banner={n:P.n,label:P.label,peak,id:txs.find(x=>x.score===peak).id};render()}},85);
+}
+function money(a){return "$"+a.toLocaleString()}
+function ago(t){const s=Math.round((Date.now()-t)/1000);return s<4?"just now":s<60?s+"s ago":Math.round(s/60)+"m ago"}
+const STL={allowed:"Allowed",held:"Held",blocked:"Blocked"};
+function row(t){const[c,l]=band(t.score),f=t.fresh&&Date.now()-t.t<700;
+ return `<button class="row ${c}${f?" fresh":""}" data-id="${t.id}"><span class="dot"></span><span class="mid"><span class="amt">${money(t.amount)}</span><span class="meta" style="display:block">${t.wallet} · ${ago(t.t)}</span></span><span><span class="pill">${l} ${t.score}</span>${STL[t.status]?`<span class="st">${STL[t.status]}</span>`:""}</span></button>`}
+function render(){
+ const flagged=txs.filter(t=>t.score>=40),pend=flagged.filter(t=>t.status==="pending");
+ const list=(filter==="flag"?pend:txs).slice(0,40);
+ $("#feed").innerHTML=list.length?list.map(row).join(""):'<p class="empty">Nothing needs review right now.</p>';
+ $("#cnt").textContent=`${txs.length} processed · ${pend.length} to review`;
+ $("#logo").classList.toggle("alert",pend.some(t=>t.score>=70));
+ const bd=$("#bdg");bd.hidden=!pend.length;bd.textContent=pend.length;
+ $("#banner").innerHTML=banner?`<div class="banner" role="alert"><b>Attack detected</b><p>${banner.label} Highest score: ${banner.peak}.</p><button data-go="${banner.id}">Review highest risk</button></div>`:"";
+ const q=pend.sort((a,b)=>b.score-a.score);
+ $("#queue").innerHTML=q.length?q.slice(0,50).map(row).join(""):'<p class="empty">All clear. Flagged payments will appear here.</p>';
+ if(tab==="over")overview();
+ if(tab==="wal")wallets();
+ if(open)sheet(open,false);
+ if(ow)walletSheet(ow);
+}
+function overview(){
+ const c={safe:0,sus:0,high:0};txs.forEach(t=>c[band(t.score)[0]]++);const n=txs.length||1;
+ const held=txs.filter(t=>t.status==="held"||t.status==="blocked").reduce((a,t)=>a+t.amount,0);
+ const pts=txs.slice(0,40).reverse().map((t,i,a)=>`${(i*300/Math.max(1,a.length-1)).toFixed(1)},${(88-t.score*.86).toFixed(1)}`).join(" ");
+ const tally={};txs.filter(t=>t.score>=40).forEach(t=>t.top.forEach(k=>tally[k]=(tally[k]||0)+1));
+ const tops=Object.entries(tally).sort((a,b)=>b[1]-a[1]).slice(0,4);
+ $("#over").innerHTML=testCard()+`<div class="grid"><div class="stat"><span class="num">${txs.length}</span><span>Processed</span></div><div class="stat"><span class="num">${c.sus+c.high}</span><span>Flagged</span></div><div class="stat"><span class="num">${money(held)}</span><span>Held or blocked</span></div></div>
+ <div class="card"><h3>Risk mix</h3><div class="bar"><i style="flex:${c.safe};background:var(--safe)"></i><i style="flex:${c.sus};background:var(--sus)"></i><i style="flex:${c.high};background:var(--high)"></i></div>
+ <div class="leg"><span>Safe <b>${Math.round(c.safe/n*100)}%</b></span><span>Review <b>${Math.round(c.sus/n*100)}%</b></span><span>High risk <b>${Math.round(c.high/n*100)}%</b></span></div></div>
+ <div class="card"><h3>Risk score, last 40 payments</h3><svg viewBox="0 0 300 92" width="100%" role="img" aria-label="Risk score trend"><line x1="0" x2="300" y1="${88-70*.86}" y2="${88-70*.86}" stroke="var(--high)" stroke-dasharray="3 4" opacity=".6"/><line x1="0" x2="300" y1="${88-40*.86}" y2="${88-40*.86}" stroke="var(--sus)" stroke-dasharray="3 4" opacity=".6"/><polyline points="${pts}" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/></svg></div>
+ <div class="card tops"><h3>What triggers flags most</h3>${tops.length?tops.map(([k,v])=>`<div><span>${NAME[k]}</span><b>${v}</b></div>`).join(""):'<p class="meta">No flags yet. Try Simulate attack.</p>'}</div>`}
+function sheet(tid,anim=true){
+ const t=txs.find(x=>x.id===tid);if(!t)return;open=tid;ow=null;const[c,l]=band(t.score),C=2*Math.PI*44;
+ const flagged=t.score>=40,rec=t.score>=70?"held":flagged?"held":"allowed";
+ const sigs=Object.keys(W).sort((a,b)=>W[b]*t.sig[b]-W[a]*t.sig[a]).filter(k=>t.sig[k]>=1);
+ $("#sheet").className="sheet on "+c;
+ $("#sheet").innerHTML=`<div class="grab"></div><div class="hero"><div class="ring"><svg width="104" height="104" viewBox="0 0 104 104"><circle class="tr" cx="52" cy="52" r="44"/><circle class="fg" cx="52" cy="52" r="44" stroke-dasharray="${C}" stroke-dashoffset="${anim?C:C*(1-t.score/100)}" id="fg"/></svg><span class="num">${t.score}</span></div>
+ <div><span class="pill">${l}</span><div class="amt" style="font-size:28px;margin-top:6px">${money(t.amount)}</div><button class="wl" data-w="${t.wallet}">${t.wallet} · View wallet</button></div></div>
+ <div>${sigs.length?sigs.map(k=>`<div class="sig"><div class="l"><span>${NAME[k]}</span><b>${Math.round(t.sig[k])}</b></div><div class="t"><i style="width:${anim?0:t.sig[k]}%" data-w="${t.sig[k]}"></i></div></div>`).join(""):'<p class="meta">No risk signals triggered.</p>'}</div>
+ <div class="why"><b>${flagged?"Why it was flagged":"Why it looks safe"}</b><p>${flagged?explain(t):"Amount, wallet and timing match this account’s normal behavior. Recommendation: allow."}</p><small>Explanation is built only from the scoring engine’s signals.</small></div>
+ <div class="acts">${["allowed","held","blocked"].map(s=>`<button data-act="${s}" class="${s===rec&&t.status==="pending"?"rec":""}" aria-pressed="${t.status===s}">${{allowed:"Allow",held:"Hold",blocked:"Block"}[s]}</button>`).join("")}</div>`;
+ $("#scrim").classList.add("on");
+ if(anim)requestAnimationFrame(()=>requestAnimationFrame(()=>{const f=$("#fg");if(f)f.style.strokeDashoffset=C*(1-t.score/100);document.querySelectorAll(".sig i").forEach(i=>i.style.width=i.dataset.w+"%")}));
+}
+function runTest(){const keep=txs;txs=[];let T=Date.now(),i0=0,s={nA:0,hi:0,fl:0,nN:0,fp:0};
+ const push=(o,atk)=>{const t={id:--i0,t:T,status:"pending",...o};score(t);txs.unshift(t);if(atk){s.nA++;t.score>=70&&s.hi++;t.score>=40&&s.fl++}else{s.nN++;t.score>=40&&s.fp++}};
+ const norm=()=>{T+=3200;const n=Math.random()<.12,k=R(0,7);push({amount:R(50,200),wallet:n?"0x"+hx()+"…"+hx():known[k],isNew:n,age:n?R(0,3):kage[k],bad:false,hour:R(9,18)},false)};
+ for(let r=0;r<4;r++){T+=130000;for(let i=0;i<50;i++)norm();
+  for(const key in KINDS){const P=KINDS[key],pool=[1,2,3].map(()=>"0x"+hx()+"…"+hx());T+=130000;for(let i=0;i<P.n;i++){T+=85;push({amount:R(...P.amt),wallet:P.pool?pool[R(0,2)]:"0x"+hx()+"…"+hx(),isNew:true,age:R(0,2),bad:Math.random()<P.bad,hour:P.hour},true)}}}
+ txs=keep;const p=x=>Math.round(x*100);return{nA:s.nA,nN:s.nN,hi:p(s.hi/s.nA),fl:p(s.fl/s.nA),fp:p(s.fp/s.nN)}}
+function testCard(){const r=lastTest;return `<div class="card"><h3>Detection test on synthetic data</h3>${r?`<div class="grid"><div class="stat"><span class="num">${r.hi}%</span><span>Attacks scored high risk</span></div><div class="stat"><span class="num">${r.fl}%</span><span>Attacks flagged</span></div><div class="stat"><span class="num">${r.fp}%</span><span>Normal payments flagged</span></div></div><p class="meta" style="white-space:normal">${r.nA} attack and ${r.nN} normal payments, generated fresh for each run.</p>`:'<p class="meta" style="white-space:normal">Score a fresh labeled set of normal and attack payments, then measure how well Sentri tells them apart.</p>'}<button class="atk" style="margin:12px 0 0" data-test="1">${r?"Run again":"Run test"}</button></div>`}
+function wmap(){const m={};txs.forEach(t=>{const w=m[t.wallet]||(m[t.wallet]={a:t.wallet,age:t.age,n:0,vol:0,max:0,list:[]});w.n++;w.vol+=t.amount;w.max=Math.max(w.max,t.score);w.list.push(t)});return m}
+function wallets(){const l=Object.values(wmap()).sort((a,b)=>b.max-a.max||b.n-a.n).slice(0,40);
+ $("#wal").innerHTML=l.map(w=>{const[c,lb]=band(w.max);return `<button class="row ${c}" data-w="${w.a}"><span class="dot"></span><span class="mid"><span class="amt" style="font-size:16px">${w.a}</span><span class="meta" style="display:block">${w.age<7?"New, "+w.age+" days old":w.age+" days old"} · ${w.n} payment${w.n>1?"s":""} · ${money(w.vol)}</span></span><span><span class="pill">${lb}</span>${blockedW.has(w.a)?'<span class="st">Blocked</span>':watch.has(w.a)?'<span class="st">Watching</span>':""}</span></button>`}).join("")}
+function walletSheet(a){const w=wmap()[a];if(!w)return;ow=a;open=null;const[c,l]=band(w.max);
+ const s=w.list.slice().sort((x,y)=>x.t-y.t),burst=Math.max(...s.map(x=>s.filter(y=>y.t>=x.t&&y.t-x.t<120000).length)),near=w.list.filter(x=>x.amount>=450&&x.amount<500).length,fl=w.list.filter(x=>x.score>=40).length;
+ const ind=[w.age<7&&`Very new wallet, created ${w.age} day${w.age===1?"":"s"} ago`,watch.has(a)&&"On your watchlist",fl&&`${fl} flagged payment${fl>1?"s":""}`,near>=3&&`${near} payments just under the $500 threshold`,burst>=5&&`${burst} payments within two minutes`].filter(Boolean);
+ $("#sheet").className="sheet on "+c;
+ $("#sheet").innerHTML=`<div class="grab"></div><span class="pill">${l} · peak score ${w.max}</span><h2 style="font-size:22px;margin:8px 0 2px">${a}</h2><div class="meta" style="margin-bottom:14px">${blockedW.has(a)?"Blocked":watch.has(a)?"Watching":"Counterparty wallet"}</div>
+ <div class="grid" style="grid-template-columns:1fr 1fr"><div class="stat"><span class="num">${w.age}d</span><span>Wallet age</span></div><div class="stat"><span class="num">${w.n}</span><span>Payments</span></div><div class="stat"><span class="num">${money(w.vol)}</span><span>Total volume</span></div><div class="stat"><span class="num">${money(Math.round(w.vol/w.n))}</span><span>Average payment</span></div></div>
+ <div class="why"><b>Risk indicators</b>${ind.length?ind.map(x=>`<p>${x}</p>`).join(""):"<p>None. This looks like a regular counterparty.</p>"}</div>
+ <div style="font:600 14px Figtree;color:var(--mute);margin:14px 0 8px">Recent payments</div>${w.list.slice(0,5).map(row).join("")}
+ <div class="acts" style="grid-template-columns:1fr 1fr;margin-top:6px"><button data-wact="watch" aria-pressed="${watch.has(a)}">${watch.has(a)?"Stop watching":"Watch wallet"}</button><button data-wact="block" class="${blockedW.has(a)?"":"rec"}" ${blockedW.has(a)?"disabled":""}>${blockedW.has(a)?"Blocked":"Block wallet"}</button></div>`;
+ $("#scrim").classList.add("on")}
+function wact(k){const a=ow;if(k==="watch"){watch.has(a)?watch.delete(a):watch.add(a);toast(watch.has(a)?"Watching wallet":"Stopped watching")}
+ else{blockedW.add(a);txs.forEach(t=>{if(t.wallet===a&&t.status==="pending")t.status="blocked"});toast("Blocked wallet")}
+ render()}
+function close(){open=null;ow=null;$("#sheet").classList.remove("on");$("#scrim").classList.remove("on")}
+function toast(m){const e=$("#toast");e.textContent=m;e.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>e.classList.remove("on"),1800)}
+function go(t){tab=t;document.querySelectorAll(".tab").forEach(e=>e.classList.toggle("on",e.id==="t-"+t));
+ document.querySelectorAll("nav button").forEach(b=>b.toggleAttribute("aria-current",b.dataset.t===t)||0);
+ document.querySelectorAll("nav button").forEach(b=>b.dataset.t===t?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));render();scrollTo(0,0)}
+document.addEventListener("click",e=>{
+ const r=e.target.closest("[data-id]"),a=e.target.closest("[data-act]"),g=e.target.closest("[data-go]"),n=e.target.closest("nav [data-t]"),f=e.target.closest("[data-f]"),w=e.target.closest("[data-w]"),wa=e.target.closest("[data-wact]"),k=e.target.closest("[data-k]"),ts=e.target.closest("[data-test]");
+ if(wa)wact(wa.dataset.wact);
+ else if(a&&open){const t=txs.find(x=>x.id===open);t.status=a.dataset.act;toast(STL[t.status]+": "+money(t.amount));close();render()}
+ else if(g){go("review");sheet(+g.dataset.go)}
+ else if(r)sheet(+r.dataset.id);
+ else if(w)walletSheet(w.dataset.w);
+ else if(ts){lastTest=runTest();render();toast("Test complete")}
+ else if(k){if(!atkRunning){kind=k.dataset.k;document.querySelectorAll("[data-k]").forEach(c=>c.setAttribute("aria-pressed",c===k))}}
+ else if(n)go(n.dataset.t);
+ else if(f){filter=f.dataset.f;document.querySelectorAll("[data-f]").forEach(c=>c.setAttribute("aria-pressed",c===f));render()}
+ else if(e.target.id==="scrim")close();
+});
+$("#atk").onclick=attack;
+$("#rst").onclick=()=>{if(atkRunning)return;txs=[];watch.clear();blockedW.clear();banner=null;close();seed();render();toast("Demo reset")};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
+const seed=()=>{for(let i=0;i<6;i++){normal();txs[0].t-=(6-i)*9000}};seed();
+render();setInterval(()=>{if(!atkRunning){normal();render()}},3200);
+</script>
+</body>
+</html>
